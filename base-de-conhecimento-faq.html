@@ -85,6 +85,8 @@
   .col-tree::-webkit-scrollbar-thumb{background:var(--gold-soft);border-radius:10px;}
   .col-tree::-webkit-scrollbar-thumb:hover{background:var(--gold);}
   .col-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 8px 10px;font-weight:700;}
+  .tree-group-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:14px 8px 8px;margin-top:6px;border-top:1px solid var(--border);}
+  .tree-group-label:first-child{margin-top:0;border-top:none;padding-top:0;}
   .readonly-banner{background:var(--gold-soft);color:var(--forest-deep);font-size:11.5px;font-weight:600;padding:8px 10px;border-radius:8px;margin-bottom:12px;text-align:center;}
 
   .tree-section{margin-bottom:6px;}
@@ -1062,11 +1064,24 @@ function escapeHtml(str){
 }
 
 /* ---------------- Render: left menu (sections + themes) ---------------- */
+/* Rótulos estáticos de grupo exibidos acima de determinadas seções na sidebar.
+   Chave = id da seção que inicia o grupo; valor = texto do rótulo. */
+const treeGroupLabels = {
+  'id7gvuxrpl': 'Verticais' // seção "Perfumes"
+};
+
 function renderTree(){
   const list = document.getElementById('treeList');
   list.innerHTML = '';
 
   state.sections.forEach((s, sIdx) => {
+    if(treeGroupLabels[s.id]){
+      const label = document.createElement('div');
+      label.className = 'tree-group-label';
+      label.textContent = treeGroupLabels[s.id];
+      list.appendChild(label);
+    }
+
     const wrap = document.createElement('div');
     wrap.className = 'tree-section';
 
