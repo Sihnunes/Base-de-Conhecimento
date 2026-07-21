@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Redes Sociais · Tania Bulhões</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#faf7f1;
+    --card:#ffffff;
+    --forest:#2c4f3a;
+    --forest-deep:#1e3a2a;
+    --gold:#b89a5e;
+    --gold-soft:#e4d6b6;
+    --ink:#282a24;
+    --muted:#8a8577;
+    --border:#e3ddd0;
+    --danger:#a24a3d;
+    --font-display:'Cormorant Garamond', serif;
+    --font-body:'DM Sans', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--cream);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{display:flex;align-items:center;gap:16px;padding:18px 28px;background:var(--forest);color:#f4efe2;flex-wrap:wrap;}
+  .brand{display:flex;align-items:baseline;gap:10px;margin-right:auto;}
+  .brand .mark{width:9px;height:9px;background:var(--gold);border-radius:1px;display:inline-block;transform:rotate(45deg);}
+  .brand h1{font-family:var(--font-display);font-weight:600;font-size:22px;letter-spacing:.02em;margin:0;color:#fbf8f1;}
+  .brand span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);}
+  .search-wrap{position:relative;flex:1;min-width:220px;max-width:360px;}
+  .search-wrap input{width:100%;padding:9px 14px 9px 34px;border-radius:20px;border:1px solid rgba(244,239,226,.25);background:rgba(244,239,226,.08);color:#fbf8f1;font-family:var(--font-body);font-size:13px;outline:none;}
+  .search-wrap input::placeholder{color:rgba(244,239,226,.55);}
+  .search-wrap input:focus{border-color:var(--gold);background:rgba(244,239,226,.14);}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:rgba(244,239,226,.6);pointer-events:none;}
+  .search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 28px rgba(30,58,42,.18);max-height:320px;overflow-y:auto;z-index:40;display:none;}
+  .search-results.open{display:block;}
+  .search-result{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;}
+  .search-result:last-child{border-bottom:none;}
+  .search-result:hover{background:var(--cream);}
+  .search-result .num{font-family:var(--font-display);font-style:italic;color:var(--gold);font-size:12px;margin-right:6px;}
+  .search-result .title{font-weight:600;font-size:13.5px;color:var(--forest-deep);}
+  .search-result .snippet{font-size:12px;color:var(--muted);margin-top:2px;}
+  .search-empty{padding:14px;font-size:12.5px;color:var(--muted);}
+
+  .actions{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{font-family:var(--font-body);font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:20px;border:1px solid rgba(244,239,226,.3);background:transparent;color:#f4efe2;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background .15s ease;}
+  .btn:hover{background:rgba(244,239,226,.12);}
+  .btn.primary{background:var(--gold);border-color:var(--gold);color:var(--forest-deep);}
+  .btn.primary:hover{background:#c7ac72;}
+  .btn.danger-text{color:var(--danger);border-color:transparent;padding:5px 8px;}
+  .btn.danger-text:hover{background:#f5e7e3;}
+  .admin-btn{font-family:var(--font-body);font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:20px;border:1px solid rgba(244,239,226,.3);background:transparent;color:#f4efe2;cursor:pointer;white-space:nowrap;}
+  .gh-modal-overlay{position:fixed;inset:0;background:rgba(30,26,20,.55);z-index:200;display:none;align-items:center;justify-content:center;}
+  .gh-modal{background:var(--cream);border-radius:14px;padding:28px 30px;width:min(420px,90vw);box-shadow:0 20px 50px rgba(0,0,0,.3);}
+  .gh-modal h3{font-family:var(--font-head);font-size:20px;color:var(--forest-deep);margin:0 0 16px;font-weight:600;}
+  .gh-field{margin-bottom:12px;}
+  .gh-field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin-bottom:5px;}
+  .gh-input{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:var(--font-body);font-size:13px;color:var(--ink);background:var(--card);outline:none;}
+  .gh-input:focus{border-color:var(--gold);}
+  .gh-status{font-size:12px;margin:10px 0 4px;min-height:16px;color:var(--muted);}
+  .gh-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
+  .gh-modal-actions .btn,.gh-modal-actions .btn.primary{color:var(--forest-deep);border-color:var(--border);}
+  .gh-modal-actions .btn.primary{background:var(--gold);border-color:var(--gold);}
+  .gh-modal-actions .btn:not(.primary){background:transparent;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--forest-deep);color:#f4efe2;padding:12px 20px;border-radius:10px;font-size:13px;font-family:var(--font-body);box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .2s ease,transform .2s ease;z-index:300;pointer-events:none;max-width:80vw;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .admin-btn.unlocked{background:#5a9c73;border-color:#5a9c73;color:#fff;}
+  .admin-btn:hover{filter:brightness(1.08);}
+  input[type=file]{display:none;}
+
+  /* ---------- Layout: two columns ---------- */
+  html,body{height:100%;overflow:hidden;}
+  .layout{display:grid;grid-template-columns:460px 1fr;height:calc(100vh - 68px);}
+  @media (max-width: 860px){.layout{grid-template-columns:1fr;height:auto;}
+    html,body{height:auto;overflow:visible;}
+  }
+
+  .col-tree{background:#f2ede2;border-right:1px solid var(--border);padding:18px 12px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--gold) transparent;}
+  .col-tree::-webkit-scrollbar{width:8px;}
+  .col-tree::-webkit-scrollbar-track{background:transparent;}
+  .col-tree::-webkit-scrollbar-thumb{background:var(--gold-soft);border-radius:10px;}
+  .col-tree::-webkit-scrollbar-thumb:hover{background:var(--gold);}
+  .col-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 8px 10px;font-weight:700;}
+  .tree-group-label{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:14px 8px 8px;margin-top:6px;border-top:1px solid var(--border);}
+  .tree-group-label:first-child{margin-top:0;border-top:none;padding-top:0;}
+  .readonly-banner{background:var(--gold-soft);color:var(--forest-deep);font-size:11.5px;font-weight:600;padding:8px 10px;border-radius:8px;margin-bottom:12px;text-align:center;}
+
+  .tree-section{margin-bottom:6px;}
+  .tree-section-head{display:flex;align-items:center;gap:8px;padding:9px 8px;border-radius:0 8px 8px 0;cursor:pointer;position:relative;}
+  .tree-section-head .bar{width:4px;align-self:stretch;border-radius:2px;position:absolute;left:0;top:3px;bottom:3px;}
+  .tree-section-head:hover{background:rgba(255,255,255,.65);}
+  .chevron{width:14px;text-align:center;color:var(--gold);font-size:12px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;transition:transform .15s ease;}
+  .chevron.expanded{transform:rotate(90deg);}
+  .tree-section-head .name{font-family:var(--font-body);font-weight:600;font-size:13.5px;color:var(--forest-deep);flex:1;background:transparent;border:none;outline:none;padding:2px 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tree-section-head .count{font-size:11px;color:var(--muted);flex-shrink:0;}
+  .section-controls{display:flex;gap:2px;opacity:0;transition:opacity .12s;position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.92);border-radius:6px;padding-left:6px;}
+  .tree-section-head:hover .section-controls{opacity:1;}
+  .icon-btn{width:19px;height:19px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:11.5px;}
+  .icon-btn:hover{background:var(--border);color:var(--forest-deep);}
+  .swatches{display:none;gap:5px;padding:6px 10px 8px 30px;flex-wrap:wrap;}
+  .swatches.open{display:flex;}
+  .swatch{width:15px;height:15px;border-radius:50%;cursor:pointer;border:2px solid transparent;}
+  .swatch.selected{border-color:var(--forest-deep);}
+
+  .tree-pages{margin-left:20px;padding-left:12px;border-left:2px solid var(--border);margin-bottom:6px;}
+  .tree-page-row{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:7px;cursor:pointer;position:relative;}
+  .tree-page-row:hover{background:rgba(255,255,255,.75);}
+  .tree-page-row.active{background:var(--card);box-shadow:0 1px 4px rgba(44,79,58,.12);}
+  .tree-page-row .num{font-family:var(--font-display);font-style:italic;color:var(--gold);font-size:13px;min-width:26px;flex-shrink:0;}
+  .tree-page-row .title{font-size:12.5px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .page-controls{display:flex;gap:1px;opacity:0;transition:opacity .12s;position:absolute;right:6px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.92);border-radius:6px;padding-left:6px;}
+  .tree-page-row:hover .page-controls{opacity:1;}
+  .add-page-btn-inline{width:100%;text-align:left;padding:7px 8px;margin-top:2px;border:1px dashed var(--border);border-radius:7px;background:transparent;color:var(--forest);font-family:var(--font-body);font-size:11.5px;font-weight:600;cursor:pointer;}
+  .add-page-btn-inline:hover{background:var(--card);}
+  .empty-hint-inline{color:var(--muted);font-size:11.5px;padding:6px 8px;font-style:italic;}
+
+  .add-section-btn{width:100%;text-align:left;padding:10px 12px;margin-top:6px;border:1px dashed var(--border);border-radius:8px;background:transparent;color:var(--forest);font-family:var(--font-body);font-size:12.5px;font-weight:600;cursor:pointer;}
+  .add-section-btn:hover{background:var(--card);}
+
+  /* ---------- Right panel: content ---------- */
+  .col-editor{padding:30px 48px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--gold-soft) transparent;}
+  .col-editor::-webkit-scrollbar{width:8px;}
+  .col-editor::-webkit-scrollbar-track{background:transparent;}
+  .col-editor::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+  .col-editor::-webkit-scrollbar-thumb:hover{background:var(--gold-soft);}
+  .editor-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);text-align:center;gap:8px;}
+  .editor-empty .big-num{font-family:var(--font-display);font-style:italic;font-size:44px;color:var(--gold-soft);}
+  .editor-topline{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .editor-topline .catalog-num{font-family:var(--font-display);font-style:italic;color:var(--gold);font-size:19px;}
+  .editor-topline .section-name{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;}
+  .title-input{width:100%;border:none;background:transparent;outline:none;font-family:var(--font-display);font-weight:600;font-size:32px;color:var(--forest-deep);padding:2px 0 12px;border-bottom:2px solid var(--border);margin-bottom:20px;max-width:680px;}
+  .title-input:focus{border-bottom-color:var(--gold);}
+  .title-static{font-family:var(--font-display);font-weight:600;font-size:32px;color:var(--forest-deep);padding:2px 0 12px;border-bottom:2px solid var(--border);margin-bottom:20px;max-width:680px;}
+  .field-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700;margin-bottom:8px;display:block;}
+  .editor-sticky-head{position:sticky;top:-30px;z-index:5;margin:-30px -48px 0;padding:30px 48px 4px;background:var(--cream);}
+  .editor-sticky-head .title-static,.editor-sticky-head .title-input{margin-bottom:16px;}
+  .editor-sticky-head.has-shadow{box-shadow:0 8px 12px -10px rgba(30,58,42,.18);}
+  @media (max-width: 860px){.editor-sticky-head{position:static;margin:0;padding:0;}}
+  .toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;align-items:center;row-gap:6px;}
+  .content-box hr{border:none;border-top:1px solid var(--border);margin:18px 0;}
+  .content-box .block-label{color:var(--gold);}
+  .content-box .field-tag{color:var(--gold);font-weight:600;}
+  .tb-btn{width:30px;height:30px;border:1px solid var(--border);background:var(--card);border-radius:6px;cursor:pointer;color:var(--forest-deep);font-size:13px;font-weight:700;}
+  .tb-btn:hover{background:var(--cream);border-color:var(--gold);}
+  .tb-select{
+    height:30px;border:1px solid var(--border);background:var(--card);border-radius:6px;
+    color:var(--forest-deep);font-family:var(--font-body);font-size:12px;font-weight:600;
+    padding:0 8px;cursor:pointer;margin-left:2px;
+  }
+  .tb-select:hover{border-color:var(--gold);}
+  .content-box font[size="1"]{font-size:11px;}
+  .content-box font[size="2"]{font-size:12.5px;}
+  .content-box font[size="3"]{font-size:14.5px;}
+  .content-box font[size="4"]{font-size:17px;}
+  .content-box font[size="5"]{font-size:20px;}
+  .content-box font[size="6"]{font-size:24px;}
+  .content-box font[size="7"]{font-size:29px;}
+  .content-box{min-height:280px;max-width:760px;border:1px solid var(--border);border-radius:10px;background:var(--card);padding:20px 22px;font-size:14.5px;line-height:1.45;outline:none;color:var(--ink);}
+  .content-box:focus{border-color:var(--gold);}
+  .content-box.static{background:transparent;border-color:transparent;padding:0;}
+  .content-box ul{padding-left:20px;}
+  .content-box p{margin:0;}
+  .content-box p + p{margin-top:4px;}
+  .content-box p:last-child{margin-bottom:0;}
+  .content-box p:empty{margin:0;min-height:1px;}
+  .content-box div{margin:0;}
+  .content-box br{line-height:1.1;}
+  .editor-footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px;max-width:760px;}
+  .save-hint{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  .save-dot{width:6px;height:6px;border-radius:50%;background:#5a9c73;}
+
+  #print-area{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    #print-area, #print-area *{visibility:visible;}
+    #print-area{display:block;position:absolute;top:0;left:0;width:100%;padding:20px 40px;}
+    .print-section{margin-bottom:26px;page-break-inside:avoid;}
+    .print-section h2{font-family:'Cormorant Garamond',serif;color:#2c4f3a;border-bottom:2px solid #b89a5e;padding-bottom:4px;}
+    .print-page{margin:12px 0 14px;}
+    .print-page .pnum{font-family:'Cormorant Garamond',serif;font-style:italic;color:#b89a5e;margin-right:6px;}
+    .print-page h3{display:inline;font-size:15px;margin:0;}
+    .print-page .body{font-size:12.5px;line-height:1.5;margin-top:4px;color:#282a24;}
+    .print-page .body p{margin:0 0 4px;}
+    .print-page .body font[size="1"]{font-size:9px;}
+    .print-page .body font[size="2"]{font-size:10.5px;}
+    .print-page .body font[size="3"]{font-size:12.5px;}
+    .print-page .body font[size="4"]{font-size:14px;}
+    .print-page .body font[size="5"]{font-size:16px;}
+    .print-page .body font[size="6"]{font-size:19px;}
+    .print-page .body font[size="7"]{font-size:23px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="mark"></span>
+    <div>
+      <h1>Catálogo de Redes Sociais</h1>
+      <div><span>Community Management · Tania Bulhões</span></div>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="searchInput" type="text" placeholder="Buscar por título, conteúdo ou tag...">
+    <div id="searchResults" class="search-results"></div>
+  </div>
+
+  <div class="actions">
+    <span id="saveStatus" style="font-size:11px;color:rgba(244,239,226,.65);align-self:center;margin-right:4px;"></span>
+    <button class="admin-btn" id="adminToggleBtn" onclick="toggleAdmin()">Entrar como admin</button>
+    <button class="btn" onclick="printCatalog()">Imprimir catálogo</button>
+    <button class="btn" id="importBtn" onclick="document.getElementById('importFile').click()">Importar JSON</button>
+    <input type="file" id="importFile" accept="application/json">
+    <button class="btn primary" onclick="exportJSON()">Exportar JSON</button>
+    <button class="btn" id="githubConfigBtn" style="display:none;" onclick="openGithubConfig()">⚙️ GitHub</button>
+    <button class="btn primary" id="githubPublishBtn" style="display:none;" onclick="publishToGithub()">🌐 Publicar</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="col-tree">
+    <div id="readonlyBanner" class="readonly-banner" style="display:none;">Somente leitura — entre como admin para editar</div>
+    <div class="col-label">Seções &amp; Temas</div>
+    <div id="treeList"></div>
+    <button class="add-section-btn" id="addSectionBtn" onclick="addSection()">+ Nova seção</button>
+  </div>
+
+  <div class="col-editor" id="editorCol">
+    <div class="editor-empty">
+      <div class="big-num">§</div>
+      <div>Selecione um tema à esquerda<br>para ver o conteúdo aqui.</div>
+    </div>
+  </div>
+</div>
+
+<div id="print-area"></div>
+
+<div id="githubModalOverlay" class="gh-modal-overlay" onclick="if(event.target===this) closeGithubConfig()">
+  <div class="gh-modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h3 style="margin:0;">Configuração do GitHub</h3>
+      <button onclick="closeGithubConfig()" title="Fechar" style="border:none;background:transparent;font-size:20px;line-height:1;cursor:pointer;color:var(--muted);padding:4px;">✕</button>
+    </div>
+    <div class="gh-field">
+      <label>Token de Acesso Pessoal</label>
+      <input class="gh-input" id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxx">
+    </div>
+    <div class="gh-field">
+      <label>Usuário / Organização</label>
+      <input class="gh-input" id="ghOwner" placeholder="ex: sihnunes">
+    </div>
+    <div class="gh-field">
+      <label>Repositório</label>
+      <input class="gh-input" id="ghRepo" placeholder="ex: faq-catalogo">
+    </div>
+    <div class="gh-field">
+      <label>Caminho do arquivo</label>
+      <input class="gh-input" id="ghPath" placeholder="ex: base-de-conhecimento-faq.html">
+    </div>
+    <div class="gh-field">
+      <label>Branch</label>
+      <input class="gh-input" id="ghBranch" placeholder="main" value="main">
+    </div>
+    <div class="gh-status" id="ghStatus"></div>
+    <div class="gh-modal-actions">
+      <button class="btn" onclick="testGithubConnection()">🔍 Testar</button>
+      <button class="btn primary" onclick="saveGithubConfig()">✅ Salvar e fechar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* ---------------- Data ---------------- */
+const STORAGE_KEY = 'tb-redes-sociais-catalogo-v1';
+
+const seedState = {
+  "sections": []
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(parsed && parsed.sections) return parsed;
+    }
+  }catch(e){ /* localStorage indisponível — segue com os dados padrão */ }
+  return JSON.parse(JSON.stringify(seedState));
+}
+
+let state = loadState();
+state.sections.forEach(s => { if(typeof s.expanded !== 'boolean') s.expanded = false; });
+
+function persist(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    setSaveStatus('saved');
+  }catch(e){
+    setSaveStatus('unavailable');
+  }
+}
+function setSaveStatus(status){
+  const el = document.getElementById('saveStatus');
+  if(!el) return;
+  if(status === 'saved'){
+    el.textContent = 'Salvo neste navegador · ' + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    el.style.color = '';
+  } else {
+    el.textContent = 'Armazenamento local indisponível — exporte o JSON para não perder alterações';
+    el.style.color = 'var(--danger)';
+  }
+}
+
+let selectedSectionId = null;
+let selectedPageId = null;
+let openColorPickerFor = null;
+
+/* ---------------- Admin / senha ----------------
+   Trava simples de UI, não é segurança de verdade: como o arquivo roda
+   inteiro no navegador, qualquer pessoa que veja o código-fonte (Ctrl+U)
+   consegue ver esta senha. Serve para evitar edição acidental pela
+   equipe, não para proteger dados sensíveis. Troque abaixo se quiser. */
+const ADMIN_PASSWORD = 'TBRedes@2026';
+let isAdmin = false;
+
+function toggleAdmin(){
+  if(isAdmin){
+    isAdmin = false;
+    updateAdminUI();
+    renderAll();
+    return;
+  }
+  const pass = prompt('Senha de administrador:');
+  if(pass === null) return;
+  if(pass === ADMIN_PASSWORD){
+    isAdmin = true;
+  } else {
+    alert('Senha incorreta.');
+  }
+  updateAdminUI();
+  renderAll();
+}
+function updateAdminUI(){
+  const btn = document.getElementById('adminToggleBtn');
+  const banner = document.getElementById('readonlyBanner');
+  const importBtn = document.getElementById('importBtn');
+  btn.textContent = isAdmin ? 'Sair do modo admin' : 'Entrar como admin';
+  btn.classList.toggle('unlocked', isAdmin);
+  banner.style.display = isAdmin ? 'none' : 'block';
+  importBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+  document.getElementById('addSectionBtn').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('githubConfigBtn').style.display = isAdmin ? 'inline-flex' : 'none';
+  document.getElementById('githubPublishBtn').style.display = isAdmin ? 'inline-flex' : 'none';
+}
+
+const palette = ['#d97757','#7b5ea3','#3d8577','#b89a5e','#a24a3d','#4a6fa5','#8a8577','#5a9c73'];
+
+/* ---------------- Helpers ---------------- */
+function findSection(id){ return state.sections.find(s=>s.id===id); }
+function findPageAnywhere(pageId){
+  for(const s of state.sections){
+    const p = s.pages.find(p=>p.id===pageId);
+    if(p) return {section:s, page:p};
+  }
+  return null;
+}
+function uid(){ return 'id'+Math.random().toString(36).slice(2,10); }
+function stripHtml(html){ const d=document.createElement('div'); d.innerHTML=html; return d.textContent||''; }
+function escapeHtml(str){
+  return str.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+/* ---------------- Render: left menu (sections + themes) ---------------- */
+/* Rótulos estáticos de grupo exibidos acima de determinadas seções na sidebar.
+   Chave = id da seção que inicia o grupo; valor = texto do rótulo. */
+const treeGroupLabels = {};
+
+function renderTree(){
+  const list = document.getElementById('treeList');
+  list.innerHTML = '';
+
+  state.sections.forEach((s, sIdx) => {
+    if(treeGroupLabels[s.id]){
+      const label = document.createElement('div');
+      label.className = 'tree-group-label';
+      label.textContent = treeGroupLabels[s.id];
+      list.appendChild(label);
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'tree-section';
+
+    const head = document.createElement('div');
+    head.className = 'tree-section-head';
+    head.innerHTML = `
+      <span class="chevron${s.expanded ? ' expanded' : ''}">❯</span>
+      <span class="bar" style="background:${s.color}"></span>
+      ${isAdmin
+        ? `<input class="name" value="${escapeHtml(s.name)}">`
+        : `<span class="name" style="padding:2px 0;">${escapeHtml(s.name)}</span>`}
+      <span class="count">${s.pages.length}</span>
+      ${isAdmin ? `
+      <div class="section-controls">
+        <button class="icon-btn" title="Cor" data-action="color">●</button>
+        <button class="icon-btn" title="Mover seção para cima" data-action="up">↑</button>
+        <button class="icon-btn" title="Mover seção para baixo" data-action="down">↓</button>
+        <button class="icon-btn" title="Excluir seção" data-action="del">✕</button>
+      </div>` : ''}
+    `;
+    if(isAdmin){
+      head.querySelector('.name').addEventListener('click', e => e.stopPropagation());
+      head.querySelector('.name').addEventListener('change', e => renameSection(s.id, e.target.value));
+      head.querySelector('[data-action="color"]').addEventListener('click', e => { e.stopPropagation(); toggleColorPicker(s.id); });
+      head.querySelector('[data-action="up"]').addEventListener('click', e => { e.stopPropagation(); moveSection(s.id,-1); });
+      head.querySelector('[data-action="down"]').addEventListener('click', e => { e.stopPropagation(); moveSection(s.id,1); });
+      head.querySelector('[data-action="del"]').addEventListener('click', e => { e.stopPropagation(); deleteSection(s.id); });
+    }
+    head.addEventListener('click', () => toggleSectionExpand(s.id));
+    wrap.appendChild(head);
+
+    if(isAdmin && openColorPickerFor === s.id){
+      const sw = document.createElement('div');
+      sw.className = 'swatches open';
+      sw.innerHTML = palette.map(c => `<span class="swatch ${c===s.color?'selected':''}" style="background:${c}" data-color="${c}"></span>`).join('');
+      sw.querySelectorAll('.swatch').forEach(el => {
+        el.addEventListener('click', e => { e.stopPropagation(); setSectionColor(s.id, el.dataset.color); });
+      });
+      wrap.appendChild(sw);
+    }
+
+    if(s.expanded){
+      const pagesBox = document.createElement('div');
+      pagesBox.className = 'tree-pages';
+
+      if(s.pages.length === 0){
+        const hint = document.createElement('div');
+        hint.className = 'empty-hint-inline';
+        hint.textContent = 'Nenhum tema nesta seção ainda.';
+        pagesBox.appendChild(hint);
+      }
+
+      s.pages.forEach((p, pIdx) => {
+        const row = document.createElement('div');
+        row.className = 'tree-page-row' + (p.id===selectedPageId ? ' active':'');
+        row.innerHTML = `
+          <span class="num">${sIdx+1}.${pIdx+1}</span>
+          <span class="title" id="pageTitle-${p.id}">${escapeHtml(p.title)}</span>
+          ${isAdmin ? `
+          <div class="page-controls">
+            <button class="icon-btn" title="Mover para cima" data-action="up">↑</button>
+            <button class="icon-btn" title="Mover para baixo" data-action="down">↓</button>
+            <button class="icon-btn" title="Excluir tema" data-action="del">✕</button>
+          </div>` : ''}
+        `;
+        if(isAdmin){
+          row.querySelector('[data-action="up"]').addEventListener('click', e => { e.stopPropagation(); movePage(s.id,p.id,-1); });
+          row.querySelector('[data-action="down"]').addEventListener('click', e => { e.stopPropagation(); movePage(s.id,p.id,1); });
+          row.querySelector('[data-action="del"]').addEventListener('click', e => { e.stopPropagation(); deletePage(s.id,p.id); });
+        }
+        row.addEventListener('click', () => selectPage(s.id, p.id));
+        pagesBox.appendChild(row);
+      });
+
+      if(isAdmin){
+        const addBtn = document.createElement('button');
+        addBtn.className = 'add-page-btn-inline';
+        addBtn.textContent = '+ Novo tema';
+        addBtn.addEventListener('click', e => { e.stopPropagation(); addPage(s.id); });
+        pagesBox.appendChild(addBtn);
+      }
+
+      wrap.appendChild(pagesBox);
+    }
+
+    list.appendChild(wrap);
+  });
+}
+
+/* ---------------- Render: right panel (content) ---------------- */
+function renderEditor(){
+  const col = document.getElementById('editorCol');
+  const found = selectedPageId ? findPageAnywhere(selectedPageId) : null;
+
+  if(!found){
+    col.innerHTML = `<div class="editor-empty"><div class="big-num">§</div><div>Selecione um tema à esquerda<br>para ver o conteúdo aqui.</div></div>`;
+    return;
+  }
+  const { section, page } = found;
+  const sIdx = state.sections.findIndex(s=>s.id===section.id) + 1;
+  const pIdx = section.pages.findIndex(p=>p.id===page.id) + 1;
+
+  if(!isAdmin){
+    col.innerHTML = `
+      <div class="editor-sticky-head" id="stickyHead">
+        <div class="editor-topline">
+          <span class="catalog-num">${sIdx}.${pIdx}</span>
+          <span class="section-name">${escapeHtml(section.name)}</span>
+        </div>
+        <div class="title-static">${escapeHtml(page.title)}</div>
+      </div>
+      <div class="content-box static">${page.content}</div>
+    `;
+    return;
+  }
+
+  col.innerHTML = `
+    <div class="editor-sticky-head" id="stickyHead">
+      <div class="editor-topline">
+        <span class="catalog-num">${sIdx}.${pIdx}</span>
+        <span class="section-name">${escapeHtml(section.name)}</span>
+      </div>
+      <input class="title-input" id="titleInput" value="${escapeHtml(page.title)}">
+
+      <span class="field-label">Conteúdo</span>
+      <div class="toolbar">
+        <button class="tb-btn" onclick="format('bold')" title="Negrito"><b>N</b></button>
+        <button class="tb-btn" onclick="format('italic')" title="Itálico"><i>I</i></button>
+        <button class="tb-btn" onclick="format('insertUnorderedList')" title="Lista">≡</button>
+        <select class="tb-select" id="fontFamilySelect" title="Fonte do texto" onchange="setFontFamily(this.value)">
+          <option value="">Fonte</option>
+          <option value="Calibri, Candara, Segoe UI, sans-serif">Calibri</option>
+          <option value="Arial, Helvetica, sans-serif">Arial</option>
+          <option value="Georgia, serif">Georgia</option>
+          <option value="'Times New Roman', Times, serif">Times New Roman</option>
+          <option value="Verdana, Geneva, sans-serif">Verdana</option>
+          <option value="Tahoma, Geneva, sans-serif">Tahoma</option>
+          <option value="'Courier New', Courier, monospace">Courier New</option>
+          <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+          <option value="'DM Sans', sans-serif">DM Sans (padrão)</option>
+        </select>
+        <select class="tb-select" id="fontSizeSelect" title="Tamanho da fonte" onchange="setFontSize(this.value)">
+          <option value="">Tamanho</option>
+          <option value="2">Pequeno</option>
+          <option value="3">Normal</option>
+          <option value="4">Médio</option>
+          <option value="5">Grande</option>
+          <option value="6">Muito grande</option>
+          <option value="7">Título</option>
+        </select>
+        <button class="tb-btn" style="width:auto;padding:0 12px;" onclick="insertFieldTag()" title="Inserir campo personalizado (ex: [Nome], [CPF])">[ ] Campo</button>
+        <button class="tb-btn" style="width:auto;padding:0 12px;" onclick="addContentBlock()" title="Adicionar novo bloco de conteúdo (ex: Opção 2)">+ Bloco</button>
+      </div>
+    </div>
+
+    <div class="content-box" id="contentBox" contenteditable="true">${page.content}</div>
+
+    <div class="editor-footer">
+      <span class="save-hint"><span class="save-dot"></span>Alterações salvas automaticamente</span>
+      <button class="btn danger-text" onclick="deletePage('${section.id}','${page.id}')">Excluir tema</button>
+    </div>
+  `;
+
+  document.getElementById('titleInput').addEventListener('input', (e) => {
+    page.title = e.target.value;
+    const rowTitle = document.getElementById('pageTitle-'+page.id);
+    if(rowTitle) rowTitle.textContent = e.target.value || 'Sem título';
+    persist();
+  });
+  document.getElementById('contentBox').addEventListener('focus', () => {
+    try{ document.execCommand('defaultParagraphSeparator', false, 'p'); }catch(e){}
+  });
+  document.getElementById('contentBox').addEventListener('input', (e) => {
+    page.content = e.target.innerHTML;
+    persist();
+  });
+}
+
+function format(cmd){
+  if(!isAdmin) return;
+  document.execCommand(cmd, false, null);
+  document.getElementById('contentBox').focus();
+}
+function setFontFamily(value){
+  if(!isAdmin || !value) return;
+  const box = document.getElementById('contentBox');
+  box.focus();
+  document.execCommand('fontName', false, value);
+  document.getElementById('fontFamilySelect').value = '';
+  box.dispatchEvent(new Event('input'));
+}
+function setFontSize(value){
+  if(!isAdmin || !value) return;
+  const box = document.getElementById('contentBox');
+  box.focus();
+  document.execCommand('fontSize', false, value);
+  document.getElementById('fontSizeSelect').value = '';
+  box.dispatchEvent(new Event('input'));
+}
+function addContentBlock(){
+  if(!isAdmin) return;
+  const box = document.getElementById('contentBox');
+  box.focus();
+  const existingCount = (box.innerHTML.match(/Opção\s?\d+/gi) || []).length;
+  // se ainda não há nenhum bloco rotulado, o conteúdo atual já é a "Opção 1" implícita
+  const nextNum = existingCount === 0 ? 2 : existingCount + 1;
+  const html = `<hr><p><strong class="block-label">Opção ${nextNum}:</strong></p><p><br></p>`;
+  const range = document.createRange();
+  range.selectNodeContents(box);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  document.execCommand('insertHTML', false, html);
+  box.dispatchEvent(new Event('input'));
+}
+function insertFieldTag(){
+  if(!isAdmin) return;
+  const box = document.getElementById('contentBox');
+  // guarda a posição do cursor antes do prompt (que tira o foco do editor)
+  const sel = window.getSelection();
+  let savedRange = null;
+  if(sel && sel.rangeCount > 0 && box.contains(sel.anchorNode)){
+    savedRange = sel.getRangeAt(0).cloneRange();
+  }
+  const name = prompt('Nome do campo personalizado (ex: Nome, CPF, nº do pedido):');
+  if(name === null) return;
+  const trimmed = name.trim();
+  if(!trimmed) return;
+  box.focus();
+  if(savedRange){
+    sel.removeAllRanges();
+    sel.addRange(savedRange);
+  } else {
+    const range = document.createRange();
+    range.selectNodeContents(box);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+  document.execCommand('insertHTML', false, `<span class="field-tag">[${escapeHtml(trimmed)}]</span>&nbsp;`);
+  box.dispatchEvent(new Event('input'));
+}
+
+/* ---------------- Actions ---------------- */
+function toggleSectionExpand(id){
+  const s = findSection(id);
+  s.expanded = !s.expanded;
+  renderAll();
+}
+function toggleColorPicker(id){
+  if(!isAdmin) return;
+  openColorPickerFor = (openColorPickerFor === id) ? null : id;
+  renderTree();
+}
+function setSectionColor(id, color){
+  if(!isAdmin) return;
+  findSection(id).color = color;
+  openColorPickerFor = null;
+  renderAll();
+}
+function renameSection(id, value){
+  if(!isAdmin) return;
+  findSection(id).name = value.trim() || 'Sem título';
+  renderAll();
+}
+function addSection(){
+  if(!isAdmin) return;
+  const s = { id:uid(), name:'Nova seção', color: palette[state.sections.length % palette.length], expanded:true, pages:[] };
+  state.sections.push(s);
+  renderAll();
+}
+function deleteSection(id){
+  if(!isAdmin) return;
+  if(!confirm('Excluir esta seção e todos os seus temas?')) return;
+  state.sections = state.sections.filter(s=>s.id!==id);
+  if(selectedSectionId===id){ selectedSectionId = null; selectedPageId = null; }
+  renderAll();
+}
+function moveSection(id, dir){
+  if(!isAdmin) return;
+  const i = state.sections.findIndex(s=>s.id===id);
+  const j = i+dir;
+  if(j<0 || j>=state.sections.length) return;
+  [state.sections[i], state.sections[j]] = [state.sections[j], state.sections[i]];
+  renderAll();
+}
+function addPage(sectionId){
+  if(!isAdmin) return;
+  const s = findSection(sectionId);
+  s.expanded = true;
+  const p = { id:uid(), title:'Novo tema', tags:[], content:'<p>Escreva o conteúdo aqui...</p>' };
+  s.pages.push(p);
+  selectedSectionId = sectionId; selectedPageId = p.id;
+  renderAll();
+}
+function deletePage(sectionId, pageId){
+  if(!isAdmin) return;
+  if(!confirm('Excluir este tema?')) return;
+  const s = findSection(sectionId);
+  s.pages = s.pages.filter(p=>p.id!==pageId);
+  if(selectedPageId===pageId) selectedPageId = null;
+  renderAll();
+}
+function movePage(sectionId, pageId, dir){
+  if(!isAdmin) return;
+  const s = findSection(sectionId);
+  const i = s.pages.findIndex(p=>p.id===pageId);
+  const j = i+dir;
+  if(j<0 || j>=s.pages.length) return;
+  [s.pages[i], s.pages[j]] = [s.pages[j], s.pages[i]];
+  renderAll();
+}
+function selectPage(sectionId, pageId){
+  const s = findSection(sectionId);
+  s.expanded = true;
+  selectedSectionId = sectionId; selectedPageId = pageId;
+  renderAll();
+}
+
+/* ---------------- Search ---------------- */
+document.getElementById('editorCol').addEventListener('scroll', (e) => {
+  const head = document.getElementById('stickyHead');
+  if(head) head.classList.toggle('has-shadow', e.target.scrollTop > 4);
+});
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  const resultsBox = document.getElementById('searchResults');
+  if(!q){ resultsBox.classList.remove('open'); return; }
+
+  const results = [];
+  state.sections.forEach((s, sIdx) => {
+    s.pages.forEach((p, pIdx) => {
+      const haystack = (p.title + ' ' + stripHtml(p.content) + ' ' + p.tags.join(' ')).toLowerCase();
+      if(haystack.includes(q)){
+        results.push({ sectionId:s.id, pageId:p.id, num:`${sIdx+1}.${pIdx+1}`, title:p.title, snippet: stripHtml(p.content).slice(0,80) });
+      }
+    });
+  });
+
+  resultsBox.innerHTML = results.length
+    ? results.map(r => `
+        <div class="search-result" data-section="${r.sectionId}" data-page="${r.pageId}">
+          <div><span class="num">${r.num}</span><span class="title">${escapeHtml(r.title)}</span></div>
+          <div class="snippet">${escapeHtml(r.snippet)}${r.snippet.length===80?'…':''}</div>
+        </div>`).join('')
+    : `<div class="search-empty">Nenhum resultado para "${escapeHtml(q)}"</div>`;
+  resultsBox.classList.add('open');
+  resultsBox.querySelectorAll('.search-result').forEach(el => {
+    el.addEventListener('click', () => jumpToResult(el.dataset.section, el.dataset.page));
+  });
+});
+function jumpToResult(sectionId, pageId){
+  document.getElementById('searchResults').classList.remove('open');
+  document.getElementById('searchInput').value = '';
+  selectPage(sectionId, pageId);
+}
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('.search-wrap')) document.getElementById('searchResults').classList.remove('open');
+});
+
+/* ---------------- Export / Import ---------------- */
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'faq-tb-catalogo.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- Publicação no GitHub ---------------- */
+const GH_CONFIG_KEY = 'tb-faq-gh-config';
+
+function toast(msg, ms){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), ms || 4200);
+}
+
+function loadGithubConfig(){
+  try{
+    const raw = localStorage.getItem(GH_CONFIG_KEY);
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){ return null; }
+}
+function saveGithubConfigObj(cfg){
+  try{ localStorage.setItem(GH_CONFIG_KEY, JSON.stringify(cfg)); }catch(e){}
+}
+function readGithubForm(){
+  return {
+    token: document.getElementById('ghToken').value.trim(),
+    owner: document.getElementById('ghOwner').value.trim(),
+    repo: document.getElementById('ghRepo').value.trim(),
+    path: document.getElementById('ghPath').value.trim().replace(/^\/+/,''),
+    branch: (document.getElementById('ghBranch').value.trim() || 'main')
+  };
+}
+function openGithubConfig(){
+  if(!isAdmin) return;
+  const cfg = loadGithubConfig() || {};
+  document.getElementById('ghToken').value = cfg.token || '';
+  document.getElementById('ghOwner').value = cfg.owner || '';
+  document.getElementById('ghRepo').value = cfg.repo || '';
+  document.getElementById('ghPath').value = cfg.path || '';
+  document.getElementById('ghBranch').value = cfg.branch || 'main';
+  document.getElementById('ghStatus').textContent = '';
+  document.getElementById('ghStatus').style.color = 'var(--muted)';
+  document.getElementById('githubModalOverlay').style.display = 'flex';
+}
+function closeGithubConfig(){
+  document.getElementById('githubModalOverlay').style.display = 'none';
+}
+function saveGithubConfig(){
+  const cfg = readGithubForm();
+  const statusEl = document.getElementById('ghStatus');
+  if(!cfg.token || !cfg.owner || !cfg.repo || !cfg.path){
+    statusEl.textContent = 'Preencha token, usuário, repositório e caminho do arquivo.';
+    statusEl.style.color = '#a24a3d';
+    return;
+  }
+  saveGithubConfigObj(cfg);
+  statusEl.textContent = '✅ Configuração salva neste navegador.';
+  statusEl.style.color = '#3d8577';
+  setTimeout(() => {
+    closeGithubConfig();
+    toast('✅ Configuração do GitHub salva.');
+  }, 700);
+}
+async function testGithubConnection(){
+  const cfg = readGithubForm();
+  const statusEl = document.getElementById('ghStatus');
+  if(!cfg.token || !cfg.owner || !cfg.repo || !cfg.path){
+    statusEl.textContent = 'Preencha todos os campos antes de testar.';
+    statusEl.style.color = '#a24a3d';
+    return;
+  }
+  statusEl.textContent = 'Testando conexão...';
+  statusEl.style.color = 'var(--muted)';
+  try{
+    const r = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`, {
+      headers:{ 'Authorization':'token '+cfg.token, 'Accept':'application/vnd.github.v3+json' },
+      cache:'no-store'
+    });
+    if(r.ok){
+      statusEl.textContent = '✅ Conexão OK — arquivo encontrado no repositório.';
+      statusEl.style.color = '#3d8577';
+    } else {
+      const err = await r.json().catch(()=>({}));
+      statusEl.textContent = '❌ ' + (err.message || ('Erro '+r.status+' ao acessar o arquivo.'));
+      statusEl.style.color = '#a24a3d';
+    }
+  }catch(e){
+    statusEl.textContent = '❌ Erro de rede: ' + e.message;
+    statusEl.style.color = '#a24a3d';
+  }
+}
+
+function b64EncodeUtf8(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+function b64DecodeUtf8(b64){
+  const bin = atob(b64.replace(/\n/g,''));
+  const bytes = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+async function fetchGithubFile(cfg){
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&_=${Date.now()}`;
+  const r = await fetch(url, {
+    headers:{ 'Authorization':'token '+cfg.token, 'Accept':'application/vnd.github.v3+json' },
+    cache:'no-store'
+  });
+  if(!r.ok){
+    const err = await r.json().catch(()=>({}));
+    throw new Error(err.message || ('Erro ao buscar arquivo ('+r.status+')'));
+  }
+  return r.json();
+}
+async function putGithubFile(cfg, content, sha, message){
+  const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+  const r = await fetch(url, {
+    method:'PUT',
+    headers:{ 'Authorization':'token '+cfg.token, 'Accept':'application/vnd.github.v3+json', 'Content-Type':'application/json' },
+    body: JSON.stringify({ message, content: b64EncodeUtf8(content), sha, branch: cfg.branch })
+  });
+  if(!r.ok){
+    const err = await r.json().catch(()=>({}));
+    const e = new Error(err.message || ('Erro ao publicar ('+r.status+')'));
+    e.status = r.status;
+    throw e;
+  }
+  return r.json();
+}
+function buildSeedReplacement(){
+  const dataForSeed = JSON.parse(JSON.stringify(state));
+  return 'const seedState = ' + JSON.stringify(dataForSeed, null, 2) + ';';
+}
+async function publishToGithub(){
+  if(!isAdmin) return;
+  const cfg = loadGithubConfig();
+  if(!cfg || !cfg.token || !cfg.owner || !cfg.repo || !cfg.path){
+    toast('⚠️ Configure o GitHub primeiro (botão ⚙️ GitHub).');
+    openGithubConfig();
+    return;
+  }
+  const btn = document.getElementById('githubPublishBtn');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Publicando...';
+  try{
+    const fileData = await fetchGithubFile(cfg);
+    const currentSrc = b64DecodeUtf8(fileData.content);
+    const seedRegex = /const seedState = \{[\s\S]*?\n\};(?=\s*\n+function loadState)/;
+    if(!seedRegex.test(currentSrc)){
+      throw new Error('Não encontrei o bloco de dados (seedState) no arquivo do repositório. Confirme o caminho do arquivo em ⚙️ GitHub.');
+    }
+    const newSrc = currentSrc.replace(seedRegex, buildSeedReplacement());
+    try{
+      await putGithubFile(cfg, newSrc, fileData.sha, 'Catálogo Redes Sociais: atualização de conteúdo');
+    }catch(err){
+      if(err.status === 409){
+        const fresh = await fetchGithubFile(cfg);
+        await putGithubFile(cfg, newSrc, fresh.sha, 'Catálogo Redes Sociais: atualização de conteúdo');
+      } else {
+        throw err;
+      }
+    }
+    toast('✅ Publicado no GitHub! O GitHub Pages leva 1–2 min para atualizar.', 5500);
+  }catch(e){
+    console.error(e);
+    toast('❌ '+e.message, 6500);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+document.getElementById('importFile').addEventListener('change', (e) => {
+  if(!isAdmin){ e.target.value=''; return; }
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try{
+      const data = JSON.parse(ev.target.result);
+      if(!data.sections) throw new Error('Formato inválido');
+      if(!confirm('Importar este arquivo vai substituir o catálogo atual. Continuar?')) return;
+      state = data;
+      state.sections.forEach(s => { if(typeof s.expanded !== 'boolean') s.expanded = false; });
+      selectedSectionId = null;
+      selectedPageId = null;
+      renderAll();
+    }catch(err){
+      alert('Não foi possível importar o arquivo: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+/* ---------------- Print catalog ---------------- */
+function printCatalog(){
+  const area = document.getElementById('print-area');
+  let html = `<h1 style="font-family:'Cormorant Garamond',serif;color:#2c4f3a;">Catálogo de Redes Sociais — Tania Bulhões</h1>`;
+  state.sections.forEach((s, sIdx) => {
+    html += `<div class="print-section"><h2>${sIdx+1}. ${escapeHtml(s.name)}</h2>`;
+    s.pages.forEach((p, pIdx) => {
+      html += `<div class="print-page"><span class="pnum">${sIdx+1}.${pIdx+1}</span><h3>${escapeHtml(p.title)}</h3><div class="body">${p.content}</div></div>`;
+    });
+    if(s.pages.length===0) html += `<div class="print-page"><div class="body" style="color:#8a8577;">Sem temas cadastrados.</div></div>`;
+    html += `</div>`;
+  });
+  area.innerHTML = html;
+  window.print();
+}
+
+/* ---------------- Init ---------------- */
+function renderAll(){
+  renderTree();
+  renderEditor();
+  persist();
+}
+updateAdminUI();
+renderAll();
+</script>
+</body>
+</html>
