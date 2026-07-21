@@ -283,7 +283,141 @@
 const STORAGE_KEY = 'tb-redes-sociais-catalogo-v1';
 
 const seedState = {
-  "sections": []
+  "sections": [
+    {
+      "id": "s1",
+      "name": "Diretrizes de Postagem",
+      "color": "#3d8577",
+      "expanded": true,
+      "pages": [
+        {
+          "id": "p1",
+          "title": "Tom de Voz nas Redes",
+          "tags": [
+            "tom de voz",
+            "linguagem"
+          ],
+          "content": "<p>Descreva aqui como a marca se expressa nas redes sociais: nível de formalidade, uso de emojis, expressões permitidas e evitadas, e exemplos de legendas dentro e fora do tom.</p><p>Sugestão: alinhar com o guia de <span class=\"field-tag\">[Tom de Voz TB]</span> já usado pelo time de CX.</p>"
+        },
+        {
+          "id": "p2",
+          "title": "Frequência e Grade de Publicação",
+          "tags": [
+            "calendário",
+            "grade"
+          ],
+          "content": "<p>Defina aqui a periodicidade de posts por rede (Instagram, TikTok, Pinterest etc.), horários preferenciais e responsáveis por cada formato.</p>"
+        },
+        {
+          "id": "p3",
+          "title": "Formatos por Rede (Feed, Stories, Reels)",
+          "tags": [
+            "formatos"
+          ],
+          "content": "<p>Especificações de tamanho, duração e boas práticas para cada formato de conteúdo por plataforma.</p>"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "name": "Aprovação de Conteúdo",
+      "color": "#b89a5e",
+      "expanded": false,
+      "pages": [
+        {
+          "id": "p4",
+          "title": "Fluxo de Aprovação",
+          "tags": [
+            "fluxo",
+            "aprovação"
+          ],
+          "content": "<p>Descreva as etapas do fluxo: criação → revisão → aprovação → publicação, com os responsáveis por cada etapa.</p>"
+        },
+        {
+          "id": "p5",
+          "title": "Prazos e Responsáveis",
+          "tags": [
+            "prazos"
+          ],
+          "content": "<p>Defina prazos padrão de aprovação por tipo de conteúdo (post orgânico, campanha, parceria/influenciador) e quem aprova em cada caso.</p>"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "name": "Gestão de Crise",
+      "color": "#a24a3d",
+      "expanded": false,
+      "pages": [
+        {
+          "id": "p6",
+          "title": "Como Responder Comentários Sensíveis",
+          "tags": [
+            "crise",
+            "comentários"
+          ],
+          "content": "<p>Diretrizes para respostas a reclamações públicas, comentários negativos ou situações delicadas nas redes sociais.</p>"
+        },
+        {
+          "id": "p7",
+          "title": "Escalonamento para CX / Jurídico",
+          "tags": [
+            "escalonamento"
+          ],
+          "content": "<p>Critérios para encaminhar um caso do time de Redes Sociais para o CX, Jurídico ou Diretoria, com os canais de contato de cada área.</p>"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "name": "Hashtags & Legendas",
+      "color": "#4a6fa5",
+      "expanded": false,
+      "pages": [
+        {
+          "id": "p8",
+          "title": "Hashtags Oficiais da Marca",
+          "tags": [
+            "hashtags"
+          ],
+          "content": "<p>Liste aqui as hashtags oficiais e recomendadas por linha de produto/campanha.</p>"
+        },
+        {
+          "id": "p9",
+          "title": "Padrão de Legendas",
+          "tags": [
+            "legendas"
+          ],
+          "content": "<p>Modelo padrão de estrutura de legenda: abertura, corpo, call-to-action e assinatura da marca.</p>"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "name": "Interação com Seguidores",
+      "color": "#7b5ea3",
+      "expanded": false,
+      "pages": [
+        {
+          "id": "p10",
+          "title": "Respostas a DMs e Comentários",
+          "tags": [
+            "dm",
+            "comentários"
+          ],
+          "content": "<p>Diretrizes de tempo de resposta e tom para mensagens diretas e comentários no dia a dia.</p>"
+        },
+        {
+          "id": "p11",
+          "title": "Encaminhamento para o CX",
+          "tags": [
+            "cx"
+          ],
+          "content": "<p>Quando um contato de rede social deve ser transferido para o atendimento (CX) via WhatsApp ou e-mail.</p>"
+        }
+      ]
+    }
+  ]
 };
 
 function loadState(){
